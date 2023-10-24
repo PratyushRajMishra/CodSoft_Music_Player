@@ -64,11 +64,11 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               Scaffold.of(context).openDrawer();
             },
-            icon: Icon(Icons.person_2_outlined, color: Colors.white),
+            icon: const Icon(Icons.person_2_outlined, color: Colors.white),
           );
         },
       ),
-      title: Text(
+      title: const Text(
         "GrooveX",
         style: TextStyle(
           fontSize: 18,
@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
       actions: [
         IconButton(
           onPressed: toggleSearch,
-          icon: Icon(Icons.search, color: Colors.white),
+          icon: const Icon(Icons.search, color: Colors.white),
         ),
       ],
     );
@@ -89,10 +89,21 @@ class _HomePageState extends State<HomePage> {
   AppBar buildSearchAppBar() {
     return AppBar(
       backgroundColor: Colors.black,
+      leading: Builder(
+        builder: (context) {
+          return IconButton(
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+            icon: const Icon(Icons.person_2_outlined, color: Colors.white),
+          );
+        },
+      ),
       title: TextField(
+        autofocus: true,
         controller: searchController,
-        style: TextStyle(color: Colors.white),
-        decoration: InputDecoration(
+        style: const TextStyle(color: Colors.white),
+        decoration: const InputDecoration(
           hintText: 'Search Songs',
           hintStyle: TextStyle(color: Colors.grey),
           border: InputBorder.none,
@@ -105,7 +116,7 @@ class _HomePageState extends State<HomePage> {
       actions: [
         IconButton(
           onPressed: toggleSearch,
-          icon: Icon(Icons.close, color: Colors.white),
+          icon: const Icon(Icons.close, color: Colors.white),
         ),
       ],
     );
@@ -115,13 +126,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      drawer: NavbarPage(),
+      drawer: const NavbarPage(),
       appBar: isSearching.value ? buildSearchAppBar() : buildDefaultAppBar(),
       body: Obx(() {
         return songs.isEmpty
-            ? Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator())
             : ListView.builder(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           itemCount: isSearching.value
               ? filteredSongs.length
               : songs.length,
@@ -130,7 +141,7 @@ class _HomePageState extends State<HomePage> {
                 ? filteredSongs[index]
                 : songs[index];
             return Container(
-              margin: EdgeInsets.only(bottom: 4),
+              margin: const EdgeInsets.only(bottom: 4),
               child: Obx(
                     () => ListTile(
                   shape: RoundedRectangleBorder(
@@ -139,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                   tileColor: Colors.blueGrey,
                   title: Text(
                     song.title,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 15,
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
@@ -147,12 +158,12 @@ class _HomePageState extends State<HomePage> {
                   ),
                   subtitle: Text(
                     song.artist ?? "",
-                    style: TextStyle(fontSize: 10, color: Colors.black),
+                    style: const TextStyle(fontSize: 10, color: Colors.black),
                   ),
                   leading: QueryArtworkWidget(
                     id: song.id,
                     type: ArtworkType.AUDIO,
-                    nullArtworkWidget: Icon(
+                    nullArtworkWidget: const Icon(
                       Icons.music_note,
                       size: 32,
                       color: Colors.white,
@@ -160,25 +171,52 @@ class _HomePageState extends State<HomePage> {
                   ),
                   trailing: controller.playIndex == index &&
                       controller.isPlaying.value
-                      ? Icon(
+                      ? const Icon(
                     Icons.play_arrow,
                     color: Colors.white,
                     size: 26,
                   )
                       : null,
-                  onTap: () {
-                    Get.to(
-                          () => PlayerScreen(data: songs),
-                      transition: Transition.downToUp,
-                    );
-                    controller.playSong(song.uri.toString(), index);
-                  },
-                ),
+                        onTap: () {
+                          Get.to(
+                                () => PlayerScreen(data: isSearching.value ? filteredSongs : songs, controller: controller),
+                            transition: Transition.downToUp,
+                          );
+                          controller.playSong(song.uri.toString(), index);
+                        }
+
+                    ),
               ),
             );
           },
         );
       }),
+      floatingActionButton: Obx(() {
+        // Show the FAB only when a song is currently playing
+        if (controller.isPlaying.value) {
+          return FloatingActionButton(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10))
+            ),
+            backgroundColor: Colors.white,
+            onPressed: () {
+              // Open the player screen for the currently playing song
+              Get.to(
+                    () => PlayerScreen(
+                  data: isSearching.value ? filteredSongs : songs,
+                  controller: controller,
+                ),
+                transition: Transition.downToUp,
+              );
+            },
+            child: const Icon(Icons.play_arrow, color: Colors.teal, size: 40,),
+          );
+        } else {
+          // Don't show the FAB if no song is playing
+          return Container();
+        }
+      }),
+
     );
   }
 }

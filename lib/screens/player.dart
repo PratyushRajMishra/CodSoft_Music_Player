@@ -8,20 +8,23 @@ import 'dart:math';
 
 class PlayerScreen extends StatefulWidget {
   final List<SongModel> data;
+  final PlayerController controller;
 
-  const PlayerScreen({Key? key, required this.data}) : super(key: key);
+  const PlayerScreen({Key? key, required this.data, required this.controller}) : super(key: key);
 
   @override
   _PlayerScreenState createState() => _PlayerScreenState();
 }
 
 class _PlayerScreenState extends State<PlayerScreen> {
-  final controller = Get.find<PlayerController>();
+  //final controller = Get.put<PlayerController>(PlayerController());
 
   @override
   void initState() {
-    // Add a listener for player state changes
-    controller.audioPlayer.playerStateStream.listen((playerState) {
+    super.initState();
+
+    // Add a listener for player state changes in the passed controller
+    widget.controller.audioPlayer.playerStateStream.listen((playerState) {
       if (playerState.processingState == ProcessingState.completed) {
         playNextSong();
       }
@@ -31,33 +34,33 @@ class _PlayerScreenState extends State<PlayerScreen> {
   void playNextSong() {
     int nextIndex;
 
-    if (controller.isShuffleEnabled.value) {
+    if (widget.controller.isShuffleEnabled.value) {
       // Shuffle is enabled, select a random song
       nextIndex = Random().nextInt(widget.data.length);
     } else {
       // Shuffle is disabled, play songs sequentially
-      nextIndex = controller.playIndex.value + 1;
+      nextIndex = widget.controller.playIndex.value + 1;
       if (nextIndex >= widget.data.length) {
         nextIndex = 0;
       }
     }
 
-    controller.playSong(widget.data[nextIndex].uri.toString(), nextIndex);
+    widget.controller.playSong(widget.data[nextIndex].uri.toString(), nextIndex);
   }
 
   void playPreviousSong() {
     int previousIndex;
 
-    if (controller.isShuffleEnabled.value) {
+    if (widget.controller.isShuffleEnabled.value) {
       previousIndex = Random().nextInt(widget.data.length);
     } else {
-      previousIndex = controller.playIndex.value - 1;
+      previousIndex = widget.controller.playIndex.value - 1;
       if (previousIndex < 0) {
         previousIndex = widget.data.length - 1;
       }
     }
 
-    controller.playSong(
+    widget.controller.playSong(
         widget.data[previousIndex].uri.toString(), previousIndex);
   }
 
@@ -95,7 +98,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                   ),
                   alignment: Alignment.center,
                   child: QueryArtworkWidget(
-                    id: widget.data[controller.playIndex.value].id,
+                    id: widget.data[widget.controller.playIndex.value].id,
                     type: ArtworkType.AUDIO,
                     artworkHeight: double.infinity,
                     artworkWidth: double.infinity,
@@ -129,7 +132,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                         height: 15,
                       ),
                       Text(
-                        widget.data[controller.playIndex.value].title ??
+                        widget.data[widget.controller.playIndex.value].title ??
                             'Music name',
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.ellipsis,
@@ -144,7 +147,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                         height: 12,
                       ),
                       Text(
-                        widget.data[controller.playIndex.value].artist ??
+                        widget.data[widget.controller.playIndex.value].artist ??
                             'Artist name',
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.ellipsis,
@@ -163,10 +166,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
                           Expanded(
                             child: IconButton(
                               onPressed: () {
-                                controller.toggleShuffle();
+                                widget.controller.toggleShuffle();
                               },
                               icon: Obx(() => Icon(
-                                    controller.isShuffleEnabled.value
+                                    widget.controller.isShuffleEnabled.value
                                         ? Icons.shuffle_on_outlined
                                         : Icons.shuffle,
                                     size: 35,
@@ -209,14 +212,12 @@ class _PlayerScreenState extends State<PlayerScreen> {
                       SizedBox(
                         height: 30,
                       ),
-                      Obx(
-                        () => Row(
+                      Obx(() {
+                        return Row(
                           children: [
                             Text(
-                              controller.position.value,
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
+                              widget.controller.position.value,
+                              style: TextStyle(color: Colors.black),
                             ),
                             Expanded(
                               child: Slider(
@@ -224,24 +225,22 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                 inactiveColor: Colors.black,
                                 activeColor: Colors.deepPurpleAccent,
                                 min: 0.0,
-                                max: controller.max.value,
-                                value: controller.value.value,
+                                max: widget.controller.max.value,
+                                value: widget.controller.value.value,
                                 onChanged: (newValue) {
-                                  controller.changeDurationToSeconds(
+                                  widget.controller.changeDurationToSeconds(
                                     newValue.toInt(),
                                   );
                                 },
                               ),
                             ),
                             Text(
-                              controller.duration.value,
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
+                              widget.controller.duration.value,
+                              style: TextStyle(color: Colors.black),
                             ),
                           ],
-                        ),
-                      ),
+                        );
+                      }),
                       SizedBox(
                         height: 20,
                       ),
@@ -257,35 +256,35 @@ class _PlayerScreenState extends State<PlayerScreen> {
                               size: 40,
                             ),
                           ),
-                          Obx(
-                            () => CircleAvatar(
+                          Obx(() {
+                            return CircleAvatar(
                               radius: 35,
                               backgroundColor: Colors.black,
                               child: Transform.scale(
                                 scale: 2.5,
                                 child: IconButton(
                                   onPressed: () {
-                                    if (controller.isPlaying.value) {
-                                      controller.audioPlayer.pause();
-                                      controller.isPlaying(false);
+                                    if (widget.controller.isPlaying.value) {
+                                      widget.controller.audioPlayer.pause();
+                                      widget.controller.isPlaying(false);
                                     } else {
-                                      controller.audioPlayer.play();
-                                      controller.isPlaying(true);
+                                      widget.controller.audioPlayer.play();
+                                      widget.controller.isPlaying(true);
                                     }
                                   },
-                                  icon: controller.isPlaying.value
+                                  icon: widget.controller.isPlaying.value
                                       ? Icon(
-                                          Icons.pause,
-                                          color: Colors.white,
-                                        )
+                                    Icons.pause,
+                                    color: Colors.white,
+                                  )
                                       : Icon(
-                                          Icons.play_arrow_rounded,
-                                          color: Colors.white,
-                                        ),
+                                    Icons.play_arrow_rounded,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
+                            );
+                          }),
                           IconButton(
                             onPressed: playNextSong,
                             icon: Icon(

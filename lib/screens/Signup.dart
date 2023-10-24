@@ -1,8 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:groovex/screens/login.dart';
+import 'package:groovex/screens/home.dart';
+
+import '../controllers/UIHelper.dart';
+import '../models/UserModel.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key});
@@ -12,6 +17,8 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,110 +55,120 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                   ),
                 ),
-                SizedBox(height:20),
+                SizedBox(height: 20),
                 Image.asset(
                   "assets/music_logo_dark.png",
                   width: 175,
                   height: 175,
                   fit: BoxFit.fitHeight,
                 ),
-                SizedBox(height:15),
+                SizedBox(height: 15),
                 TextFormField(
+                  style: const TextStyle(color: Colors.white),
+                  //controller: emailController,
                   decoration: InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.email_outlined,
-                        color: Colors.grey,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                        BorderSide(color: Colors.white, width: 1.0),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide:
-                        BorderSide(color: Colors.grey, width: 1.0),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      label: Text(
-                        'Email',
-                        style: TextStyle(
-                            color: Colors.grey, fontWeight: FontWeight.w500),
-                      )),
+                    prefixIcon: Icon(
+                      Icons.email_outlined,
+                      color: Colors.grey,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white, width: 1.0),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    labelText: 'Email',
+                    labelStyle: TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
                 SizedBox(
                   height: 25,
                 ),
                 TextFormField(
+                  style: const TextStyle(color: Colors.white),
+                  //controller: passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.lock_outline,
-                        color: Colors.grey,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                        BorderSide(color: Colors.white, width: 1.0),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide:
-                        BorderSide(color: Colors.grey, width: 1.0),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      label: Text(
-                        'Password',
-                        style: TextStyle(
-                            color: Colors.grey, fontWeight: FontWeight.w500),
-                      )),
+                    prefixIcon: Icon(
+                      Icons.lock_outline,
+                      color: Colors.grey,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white, width: 1.0),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    labelText: 'Password',
+                    labelStyle: TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
                 SizedBox(
                   height: 25,
                 ),
                 TextFormField(
+                  style: const TextStyle(color: Colors.white),
+                  //controller: cPasswordController,
                   obscureText: true,
                   decoration: InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.lock_outline,
-                        color: Colors.grey,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                        BorderSide(color: Colors.white, width: 1.0),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide:
-                        BorderSide(color: Colors.grey, width: 1.0),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      label: Text(
-                        'Confirm Password',
-                        style: TextStyle(
-                            color: Colors.grey, fontWeight: FontWeight.w500),
-                      )),
+                    prefixIcon: Icon(
+                      Icons.lock_outline,
+                      color: Colors.grey,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white, width: 1.0),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    labelText: 'Confirm Password',
+                    labelStyle: TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
                 SizedBox(
                   height: 40,
                 ),
                 CupertinoButton(
-                    child: Text(
-                      'Sign up',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.white),
+                  child: Text(
+                    'Sign up',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
-                    color: Colors.blueGrey.shade500,
-                    onPressed: () {}),
+                  ),
+                  color: Colors.blueGrey.shade500,
+                  onPressed: () {},
+                ),
 
                 SizedBox(height: 30,),
                 OutlinedButton.icon(
                   style: ButtonStyle(
-                      backgroundColor:
-                      MaterialStateProperty.all(Colors.white70)),
+                    backgroundColor: MaterialStateProperty.all(Colors.white70),
+                  ),
                   onPressed: () {},
                   icon: Container(
-                      height: 25,
-                      decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(16)),
-                      child: Image.asset('assets/google_logo.png', height: 20,)),
+                    height: 25,
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Image.asset('assets/google_logo.png', height: 20,),
+                  ),
                   label: Text(
                     'Sign up with Google',
                     style: TextStyle(
@@ -161,7 +178,7 @@ class _SignupPageState extends State<SignupPage> {
                   ),
                 ),
 
-                SizedBox(height:50,),
+                SizedBox(height: 50,),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
@@ -169,7 +186,7 @@ class _SignupPageState extends State<SignupPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Already member?  ",
+                          "Already a member?  ",
                           style: TextStyle(fontSize: 16, color: Colors.white),
                         ),
                         InkWell(
@@ -177,15 +194,17 @@ class _SignupPageState extends State<SignupPage> {
                             Navigator.of(context).pop();
                           },
                           child: Text('Sign in',
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.bold)),
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ],
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),

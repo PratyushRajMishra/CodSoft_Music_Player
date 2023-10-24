@@ -57,7 +57,7 @@ class _NavbarPageState extends State<NavbarPage> {
               height: 20,
             ),
             Text(
-              "Pratyush Raj",
+              "Local User",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 18,
@@ -66,7 +66,7 @@ class _NavbarPageState extends State<NavbarPage> {
             SizedBox(
               height: 10,
             ),
-            Text("pratyushrajmishra70@gmail.com",
+            Text("localuser@groovex.com",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,

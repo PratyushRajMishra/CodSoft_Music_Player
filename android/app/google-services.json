@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "148657030728",
+    "project_id": "groovex-43cd5",
+    "storage_bucket": "groovex-43cd5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:148657030728:android:3f300931ed1d838e65ba7d",
+        "android_client_info": {
+          "package_name": "com.example.groovex"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaB1rLmzbsk5e4Ax49IMBLiB2MkkZgQ2w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
