@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:groovex/controllers/player_controller.dart';
-import 'package:groovex/screens/navBar.dart';
+import 'package:groovex/screens/SlideBar.dart';
+
 import 'package:groovex/screens/player.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
