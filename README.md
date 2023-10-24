@@ -1,4 +1,4 @@
-# groovex
+# GrooveX
 
 A new Flutter project.
 
