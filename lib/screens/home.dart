@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:groovex/controllers/player_controller.dart';
 import 'package:groovex/screens/SlideBar.dart';
-
 import 'package:groovex/screens/player.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
@@ -18,41 +17,41 @@ class _HomePageState extends State<HomePage> {
   TextEditingController searchController = TextEditingController();
   RxList<SongModel> songs = <SongModel>[].obs;
   RxBool isSearching = false.obs;
+  RxList<SongModel> filteredSongs = <SongModel>[].obs;
 
   @override
   void initState() {
     super.initState();
-    // Load songs and store them in the 'songs' list.
     loadSongs();
   }
 
   Future<void> loadSongs() async {
     final songsList = await controller.audioQuery.querySongs(
-      ignoreCase: true,
       orderType: OrderType.ASC_OR_SMALLER,
-      sortType: null,
       uriType: UriType.EXTERNAL,
     );
-    setState(() {
-      songs.assignAll(songsList);
-    });
+    songs.assignAll(songsList);
+    filteredSongs.assignAll(songsList); // Initialize filteredSongs with all songs
   }
 
-
-  RxList<SongModel> filteredSongs() {
+  void updateFilteredSongs() {
     final query = searchController.text.toLowerCase();
-    return songs
-        .where((song) =>
-    song.displayNameWOExt.toLowerCase().contains(query) ||
-        song.artist.toString().toLowerCase().contains(query))
-        .toList()
-        .obs;
+    filteredSongs.assignAll(
+      songs
+          .where((song) =>
+      song.title.toLowerCase().contains(query) ||
+          (song.artist ?? "").toLowerCase().contains(query))
+          .toList(),
+    );
   }
 
   void toggleSearch() {
-    isSearching.value = !isSearching.value;
+    setState(() {
+      isSearching.value = !isSearching.value;
+    });
     if (!isSearching.value) {
       searchController.clear();
+      updateFilteredSongs();
     }
   }
 
@@ -99,7 +98,7 @@ class _HomePageState extends State<HomePage> {
           border: InputBorder.none,
         ),
         onChanged: (value) {
-          setState(() {});
+          updateFilteredSongs();
         },
       ),
       centerTitle: true,
@@ -118,68 +117,68 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.black,
       drawer: NavbarPage(),
       appBar: isSearching.value ? buildSearchAppBar() : buildDefaultAppBar(),
-      body: songs.isEmpty
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : ListView.builder(
-              physics: BouncingScrollPhysics(),
-              itemCount: isSearching.value ? filteredSongs().length : songs.length,
-              itemBuilder: (context, index) {
-                final song =
-                    isSearching.value ? filteredSongs()[index] : songs[index];
-
-                return Container(
-                  margin: EdgeInsets.only(bottom: 4),
-                  child: Obx(
+      body: Obx(() {
+        return songs.isEmpty
+            ? Center(child: CircularProgressIndicator())
+            : ListView.builder(
+          physics: BouncingScrollPhysics(),
+          itemCount: isSearching.value
+              ? filteredSongs.length
+              : songs.length,
+          itemBuilder: (context, index) {
+            final song = isSearching.value
+                ? filteredSongs[index]
+                : songs[index];
+            return Container(
+              margin: EdgeInsets.only(bottom: 4),
+              child: Obx(
                     () => ListTile(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      tileColor: Colors.blueGrey,
-                      title: Text(
-                        song.displayNameWOExt,
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      subtitle: Text(
-                        song.artist.toString(),
-                        style: TextStyle(fontSize: 10, color: Colors.black),
-                      ),
-                      leading: QueryArtworkWidget(
-                        id: song.id,
-                        type: ArtworkType.AUDIO,
-                        nullArtworkWidget: Icon(
-                          Icons.music_note,
-                          size: 32,
-                          color: Colors.white,
-                        ),
-                      ),
-                      trailing: controller.playIndex == index &&
-                              controller.isPlaying.value
-                          ? Icon(
-                              Icons.play_arrow,
-                              color: Colors.white,
-                              size: 26,
-                            )
-                          : null,
-                      onTap: () {
-                        Get.to(
-                          () => PlayerScreen(
-                            data: songs,
-                          ),
-                          transition: Transition.downToUp,
-                        );
-                        controller.playSong(song.uri.toString(), index);
-                      },
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  tileColor: Colors.blueGrey,
+                  title: Text(
+                    song.title,
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                );
-              },
-            ),
+                  subtitle: Text(
+                    song.artist ?? "",
+                    style: TextStyle(fontSize: 10, color: Colors.black),
+                  ),
+                  leading: QueryArtworkWidget(
+                    id: song.id,
+                    type: ArtworkType.AUDIO,
+                    nullArtworkWidget: Icon(
+                      Icons.music_note,
+                      size: 32,
+                      color: Colors.white,
+                    ),
+                  ),
+                  trailing: controller.playIndex == index &&
+                      controller.isPlaying.value
+                      ? Icon(
+                    Icons.play_arrow,
+                    color: Colors.white,
+                    size: 26,
+                  )
+                      : null,
+                  onTap: () {
+                    Get.to(
+                          () => PlayerScreen(data: songs),
+                      transition: Transition.downToUp,
+                    );
+                    controller.playSong(song.uri.toString(), index);
+                  },
+                ),
+              ),
+            );
+          },
+        );
+      }),
     );
   }
 }
