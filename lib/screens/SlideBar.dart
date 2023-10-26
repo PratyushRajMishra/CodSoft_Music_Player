@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:groovex/screens/login.dart';
+
 
 class NavbarPage extends StatefulWidget {
   const NavbarPage({super.key});
@@ -12,7 +16,7 @@ class _NavbarPageState extends State<NavbarPage> {
   Widget build(BuildContext context) {
     return Drawer(
       child: Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.blueGrey.shade900,
         body: SafeArea(
             child: Column(
           children: [
@@ -85,7 +89,13 @@ class _NavbarPageState extends State<NavbarPage> {
                 child: Column(
                   children: [
                     ListTile(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        Get.to(
+                              () => LoginPage(),
+                          transition: Transition.rightToLeft,
+                        );
+                      },
                       leading: const Icon(
                         Icons.person_2_outlined,
                         color: Colors.white,
@@ -102,7 +112,13 @@ class _NavbarPageState extends State<NavbarPage> {
                       height: 5,
                     ),
                     ListTile(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        Get.to(
+                              () => LoginPage(),
+                          transition: Transition.rightToLeft,
+                        );
+                      },
                       leading: const Icon(
                         Icons.favorite_border,
                         color: Colors.white,
@@ -119,7 +135,13 @@ class _NavbarPageState extends State<NavbarPage> {
                       height: 5,
                     ),
                     ListTile(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        Get.to(
+                              () => LoginPage(),
+                          transition: Transition.rightToLeft,
+                        );
+                      },
                       leading: const Icon(
                         Icons.featured_play_list_outlined,
                         color: Colors.white,
@@ -136,7 +158,13 @@ class _NavbarPageState extends State<NavbarPage> {
                       height: 5,
                     ),
                     ListTile(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        Get.to(
+                              () => LoginPage(),
+                          transition: Transition.rightToLeft,
+                        );
+                      },
                       leading: const Icon(
                         Icons.settings,
                         color: Colors.white,
@@ -153,7 +181,13 @@ class _NavbarPageState extends State<NavbarPage> {
                       height: 5,
                     ),
                     ListTile(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        Get.to(
+                              () => LoginPage(),
+                          transition: Transition.rightToLeft,
+                        );
+                      },
                       leading: const Icon(
                         Icons.feedback_outlined,
                         color: Colors.white,
@@ -179,27 +213,15 @@ class _NavbarPageState extends State<NavbarPage> {
               child: Column(
                 children: [
                   ListTile(
-                    onTap: () {},
-                    leading: const Icon(
-                      Icons.share_outlined,
-                      color: Colors.white,
-                    ),
-                    title: const Text(
-                      'Share',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18),
-                    ),
-                  ),
-                  ListTile(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
                     leading: const Icon(
                       Icons.logout_outlined,
                       color: Colors.red,
                     ),
                     title: const Text(
-                      'Sign out',
+                      'Exit',
                       style: TextStyle(
                           color: Colors.red,
                           fontWeight: FontWeight.bold,

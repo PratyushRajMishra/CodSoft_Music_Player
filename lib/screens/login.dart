@@ -1,9 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:groovex/screens/Signup.dart';
+
+import '../controllers/UIHelper.dart';
+import '../models/UserModel.dart';
+import 'home.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,6 +19,118 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  void checkvalues() {
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+
+    if (email == "" || password == "") {
+      UIHelper.showAlertDialog(context, "Incomplete Data", "Please fill all the fields!");
+    } else {
+      logIn(email, password);
+    }
+  }
+
+  void logIn(String email, String password) async {
+    UserCredential? credential;
+
+    UIHelper.showLoadingDialog(context, "Logging In..");
+
+    try {
+      credential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+    } on FirebaseAuthException catch (ex) {
+      Navigator.pop(context);
+      UIHelper.showAlertDialog(context, "An error occured", ex.message.toString());
+    }
+
+    if (credential != null) {
+      String uid = credential.user!.uid;
+
+      DocumentSnapshot userData =
+      await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      UserModel userModel =
+      UserModel.fromMap(userData.data() as Map<String, dynamic>);
+
+      print("Log in Successfully!");
+      Navigator.popUntil(context, (route) => route.isFirst);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context){
+          return HomePage();
+        }
+        ),
+      );
+    }
+  }
+
+  void _showForgotPasswordDialog() {
+    TextEditingController emailController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Forgot Password?"),
+          content: TextField(
+            controller: emailController,
+            decoration: InputDecoration(
+              hintText: "Enter your email",
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text("Reset Password"),
+              onPressed: () async {
+                String email = emailController.text.trim();
+
+                if (email.isNotEmpty) {
+                  try {
+                    await FirebaseAuth.instance.sendPasswordResetEmail(
+                      email: email,
+                    );
+                    Navigator.of(context).pop();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          "Please check your email to reset your password.",
+                        ),
+                        duration: Duration(seconds: 5), // Adjust the duration as needed
+                      ),
+                    );
+                  } on FirebaseAuthException catch (ex) {
+                    UIHelper.showAlertDialog(
+                      context,
+                      "An error occurred",
+                      ex.message.toString(),
+                    );
+                  }
+                } else {
+                  UIHelper.showAlertDialog(
+                    context,
+                    "Incomplete Data",
+                    "Please enter your email.",
+                  );
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,6 +170,8 @@ class _LoginPageState extends State<LoginPage> {
                     height: 30,
                   ),
                   TextFormField(
+                    style: const TextStyle(color: Colors.white),
+                    controller: emailController,
                     decoration: InputDecoration(
                         prefixIcon: Icon(
                           Icons.email_outlined,
@@ -77,6 +197,8 @@ class _LoginPageState extends State<LoginPage> {
                     height: 25,
                   ),
                   TextFormField(
+                    style: const TextStyle(color: Colors.white),
+                    controller: passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
                         prefixIcon: Icon(
@@ -109,7 +231,9 @@ class _LoginPageState extends State<LoginPage> {
                               .amber.shade900, // Customize the color as needed
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        _showForgotPasswordDialog();
+                      },
                     ),
                   ),
                   SizedBox(
@@ -122,7 +246,9 @@ class _LoginPageState extends State<LoginPage> {
                             fontWeight: FontWeight.bold, color: Colors.white),
                       ),
                       color: Colors.blueGrey.shade500,
-                      onPressed: () {}),
+                      onPressed: () {
+                        checkvalues();
+                      }),
                   SizedBox(
                     height: 35,
                   ),

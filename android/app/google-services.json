@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "148657030728",
-    "project_id": "groovex-43cd5",
-    "storage_bucket": "groovex-43cd5.appspot.com"
+    "project_number": "169707855355",
+    "project_id": "musicplayer-eec88",
+    "storage_bucket": "musicplayer-eec88.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:148657030728:android:3f300931ed1d838e65ba7d",
+        "mobilesdk_app_id": "1:169707855355:android:431af1580ea75f8b4fff5e",
         "android_client_info": {
           "package_name": "com.example.groovex"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAaB1rLmzbsk5e4Ax49IMBLiB2MkkZgQ2w"
+          "current_key": "AIzaSyCd7wNlZ1njEpqx3nsCOPeN_o_jlU8Ryjw"
         }
       ],
       "services": {

@@ -18,6 +18,59 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage> {
 
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController cPasswordController = TextEditingController();
+
+  void checkvalues() {
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+    String cPassword = cPasswordController.text.trim();
+
+    if (email == "" || password == "" || cPassword == "") {
+      UIHelper.showAlertDialog(context, "Incomplete Data", "Please fill all the fields!");
+    } else if (password != cPassword) {
+      UIHelper.showAlertDialog(context, "Password Mismatch", "The password you entered do not Match!");
+    } else {
+      signUp(email, password);
+    }
+  }
+
+  void signUp(String email, String password) async {
+    UserCredential? credential;
+
+    UIHelper.showLoadingDialog(context, "Creating new Account..");
+
+    try {
+      credential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+    } on FirebaseAuthException catch (ex) {
+      Navigator.pop(context);
+
+      UIHelper.showAlertDialog(context, "An error occured", ex.message.toString());
+      print(ex.code.toString());
+    }
+
+    if (credential != null) {
+      String uid = credential.user!.uid;
+      UserModel newUser =
+      new UserModel(uid: uid, email: email, firstname: "", lastname: "", profilepic: "");
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(uid)
+          .set(newUser.toMap())
+          .then((value) {
+        print("New user created!");
+        Navigator.popUntil(context, (route) => route.isFirst);
+        Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context){
+            return HomePage();
+          }
+          ),
+        );
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +118,7 @@ class _SignupPageState extends State<SignupPage> {
                 SizedBox(height: 15),
                 TextFormField(
                   style: const TextStyle(color: Colors.white),
-                  //controller: emailController,
+                  controller: emailController,
                   decoration: InputDecoration(
                     prefixIcon: Icon(
                       Icons.email_outlined,
@@ -91,7 +144,7 @@ class _SignupPageState extends State<SignupPage> {
                 ),
                 TextFormField(
                   style: const TextStyle(color: Colors.white),
-                  //controller: passwordController,
+                  controller: passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
                     prefixIcon: Icon(
@@ -118,7 +171,7 @@ class _SignupPageState extends State<SignupPage> {
                 ),
                 TextFormField(
                   style: const TextStyle(color: Colors.white),
-                  //controller: cPasswordController,
+                  controller: cPasswordController,
                   obscureText: true,
                   decoration: InputDecoration(
                     prefixIcon: Icon(
@@ -152,7 +205,9 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                   ),
                   color: Colors.blueGrey.shade500,
-                  onPressed: () {},
+                  onPressed: () {
+                    checkvalues();
+                  },
                 ),
 
                 SizedBox(height: 30,),
