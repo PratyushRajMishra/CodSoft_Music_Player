@@ -38,6 +38,7 @@ dependencies:
   get: ^4.6.6
   just_audio: ^0.9.35
   on_audio_query: ^2.9.0
+  share_plus: ^7.2.1
   permission_handler: ^11.0.1
   flutter_native_splash: ^2.3.2
   cached_network_image: ^3.3.0
@@ -45,6 +46,8 @@ dependencies:
   firebase_auth: ^4.11.1
   firebase_storage: ^11.3.1
   cloud_firestore: ^4.11.0
+  google_sign_in: ^6.1.5
+
 
 flutter_native_splash:
   color: "#ffffff"

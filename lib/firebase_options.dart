@@ -44,37 +44,37 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAVnqonB5-9PHwGrocX4EpgVF7YHiDUAn4',
-    appId: '1:148657030728:web:7297da6c3ba0462c65ba7d',
-    messagingSenderId: '148657030728',
-    projectId: 'groovex-43cd5',
-    authDomain: 'groovex-43cd5.firebaseapp.com',
-    storageBucket: 'groovex-43cd5.appspot.com',
+    apiKey: 'AIzaSyDfH9t_jxE8yx0NOUKz2GJp0HTah2kZKGw',
+    appId: '1:169707855355:web:48c17bae77add5e54fff5e',
+    messagingSenderId: '169707855355',
+    projectId: 'musicplayer-eec88',
+    authDomain: 'musicplayer-eec88.firebaseapp.com',
+    storageBucket: 'musicplayer-eec88.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAaB1rLmzbsk5e4Ax49IMBLiB2MkkZgQ2w',
-    appId: '1:148657030728:android:3f300931ed1d838e65ba7d',
-    messagingSenderId: '148657030728',
-    projectId: 'groovex-43cd5',
-    storageBucket: 'groovex-43cd5.appspot.com',
+    apiKey: 'AIzaSyCd7wNlZ1njEpqx3nsCOPeN_o_jlU8Ryjw',
+    appId: '1:169707855355:android:431af1580ea75f8b4fff5e',
+    messagingSenderId: '169707855355',
+    projectId: 'musicplayer-eec88',
+    storageBucket: 'musicplayer-eec88.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDm_6jMI4lENZB01BkavHOLUwWguZfZWeQ',
-    appId: '1:148657030728:ios:024db7f5073c867e65ba7d',
-    messagingSenderId: '148657030728',
-    projectId: 'groovex-43cd5',
-    storageBucket: 'groovex-43cd5.appspot.com',
+    apiKey: 'AIzaSyAG9x0HXXVyoQixuFZcrn1pGzV6baTmiSI',
+    appId: '1:169707855355:ios:6aaa5e137da615024fff5e',
+    messagingSenderId: '169707855355',
+    projectId: 'musicplayer-eec88',
+    storageBucket: 'musicplayer-eec88.appspot.com',
     iosBundleId: 'com.example.groovex',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDm_6jMI4lENZB01BkavHOLUwWguZfZWeQ',
-    appId: '1:148657030728:ios:a727fb0fbc4c6fe465ba7d',
-    messagingSenderId: '148657030728',
-    projectId: 'groovex-43cd5',
-    storageBucket: 'groovex-43cd5.appspot.com',
+    apiKey: 'AIzaSyAG9x0HXXVyoQixuFZcrn1pGzV6baTmiSI',
+    appId: '1:169707855355:ios:2adde9589e8a7a694fff5e',
+    messagingSenderId: '169707855355',
+    projectId: 'musicplayer-eec88',
+    storageBucket: 'musicplayer-eec88.appspot.com',
     iosBundleId: 'com.example.groovex.RunnerTests',
   );
 }
